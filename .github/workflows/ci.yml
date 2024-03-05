@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - '*'
 
 jobs:
   continuous-integration:
@@ -34,3 +36,14 @@ jobs:
           yarn --frozen-lockfile && \
             yarn build:dist && \
             yarn cache clean
+      - name: setup node publish
+        if: github.event_name == 'push'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 10.x
+          registry-url: 'https://npm.pkg.github.com'
+      - name: publish
+        if: github.event_name == 'push'
+        run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

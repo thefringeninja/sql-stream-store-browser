@@ -12,6 +12,9 @@ jobs:
   continuous-integration:
     runs-on: ubuntu-latest
     name: continuous-integration/github
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: setup dotnet
         uses: actions/setup-dotnet@v4
@@ -44,6 +47,8 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
       - name: publish
         if: github.event_name == 'push'
-        run: yarn publish
+        run: |
+          yarn version --no-git-tag-version --new-version $(dotnet minver)
+          yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

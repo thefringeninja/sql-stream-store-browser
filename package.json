@@ -1,5 +1,5 @@
 {
-  "name": "@sqlstreamstore/browser",
+  "name": "@thefringeninja/browser",
   "description": "Sql Stream Store User Interface",
   "repository": "https://github.com/SQLStreamStore/sql-stream-store-browser.git",
   "scripts": {

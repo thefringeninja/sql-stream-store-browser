@@ -11,9 +11,26 @@ jobs:
     runs-on: ubuntu-latest
     name: continuous-integration/github
     steps:
+      - name: setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version:
+            8.0
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 10.x
       - name: checkout
-        uses: actions/checkout@a14471d83
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: get version
+        run: |
+          dotnet tool restore
+          version=$(dotnet minver)
+          echo "REACT_APP_CLIENT_VERSION=${version}" >> "GITHUB_ENV"          
       - name: build
-        run: "./build.sh"
-        env:
-          MYGET_API_KEY: ${{ secrets.MYGET_API_KEY }}
+        run: |
+          yarn --frozen-lockfile && \
+            yarn build:dist && \
+            yarn cache clean
